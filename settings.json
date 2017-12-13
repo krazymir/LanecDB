@@ -1,0 +1,24 @@
+{
+    "recurringJobs" : [
+        {
+            "module": "getExternalIP",
+            "cron": "* * * * *",
+            "startImmediately": true,
+            "args": [
+                "http://91.198.22.70/",
+                "http://whatismyipaddress.com/",
+                "http://www.myipaddress.com/show-my-ip-address/"
+            ]
+        },
+        {
+            "module": "discoverNodes",
+            "cron": "*/12 * * * *",
+            "startImmediately": true,
+            "args": []
+        },
+        {
+            "module": "initBlockchain",
+            "args": []
+        }
+    ]
+}
