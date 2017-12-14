@@ -1,42 +1,45 @@
+'use strict'
+
+const common = require('../common')
+
 function initIP(a) {
-    console.log('Acquiring own external IP...');
-    const http = require('http');
-    let ip;
-    a.forEach(address => {
+    common.log.info('Acquiring own external IP...')
+    const http = require('http')
+    common.config.externalIP = null
+    for (var i = 0, len = a.length; i < len; i++) {
         try {
-            http.get(address, (resp) => {
-                let data = '';
+            if (common.config.externalIP) {
+                break;
+            }
+            http.get(a[i], (resp) => {
+                let data = ''
 
                 resp.on('data', (chunk) => {
-                    data += chunk;
-                });
+                    data += chunk
+                })
 
                 resp.on('end', () => {
-                    let regex = /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/;
-                    let result = data.match(regex);
+                    let regex = /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/
+                    let result = data.match(regex)
                     if (result && result.length > 0) {
-                        let ipStr = result[0];
+                        let ipStr = result[0]
                         if (ipStr) {
-                            ip = ipStr;
-                            console.log(`Discovered external IP: ${ip}`);
+                            common.config.externalIP = ipStr
+                            common.log.info('Acquiring own external IP...')
                         }
                     }
-                });
+                })
 
             }).on("error", (err) => {
-                console.log("Error: " + err.message);
-            });
+                common.log.error(err.message)
+            })
         }
         catch (err) {
-
+            common.log.error(err.message)
         }
-    });
-};
-
-function onResponce(err, data) {
-    console.log(data);
+    }
 }
 
 module.exports.run = (a) => {
-    initIP(a);
-};
+    initIP(a)
+}

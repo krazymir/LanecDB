@@ -1,13 +1,25 @@
 {
-    "recurringJobs" : [
+    "logging": {
+        "loggerName": "develop",
+        "loggerConfig": {
+            "console": {
+              "level": "silly",
+              "colorize": "true",
+              "label": "category one"
+            },
+            "file": {
+                "filename": "./system.log",
+                "level": "warn"
+            }
+          }
+    },
+    "recurringJobs": [
         {
             "module": "getExternalIP",
             "cron": "* * * * *",
             "startImmediately": true,
             "args": [
-                "http://91.198.22.70/",
-                "http://whatismyipaddress.com/",
-                "http://www.myipaddress.com/show-my-ip-address/"
+                "http://91.198.22.70/"
             ]
         },
         {

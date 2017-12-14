@@ -1,9 +1,11 @@
-//var settings = require('../../settings.json');
+'use strict'
+
+const common = require('../common')
 
 function discoverNodes(a) {
-    console.log('Starting node discovery...' + a);
+    common.log.info('Starting node discovery...')
 }
 
 module.exports.run = (a) => {
-    discoverNodes(a);
-};
+    discoverNodes(a)
+}

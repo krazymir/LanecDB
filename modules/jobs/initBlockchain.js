@@ -1,7 +1,11 @@
+'use strict'
+
+const common = require('../common')
+
 function initBlockchain(a) {
-    console.log('Initializing blockchain...' + a);
-};
+    common.log.info('Initializing blockchain...')
+}
 
 module.exports.run = (a) => {
-    initBlockchain(a);
-};
+    initBlockchain(a)
+}

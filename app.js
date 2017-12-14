@@ -1,6 +1,11 @@
 // Initializing and setting up recurring jobs
-require('./modules/jobs');
+require('./modules/jobs')
 
+// Initializing the common module and logging
+const common = require('./modules/common')
+common.log.info('Starting the server...')
+
+// Initializing the web server
 const express = require('express')
 const app = express()
 
@@ -10,4 +15,7 @@ app.get('/', (req, res) => {
 }
 )
 
-app.listen(3000, () => console.log('Example app listening on port 3000!'))
+app.listen(3000, () => {
+    common.log.info('Starting the web server...')
+}
+)

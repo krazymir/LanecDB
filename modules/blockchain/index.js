@@ -1,3 +1,3 @@
-var block = require('./block');
-global._blockchain = [block.getGenesisBlock()];
-module.exports = block;
+const block = require('./block')
+
+module.exports = [block.getGenesisBlock()]

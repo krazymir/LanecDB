@@ -1,6 +1,6 @@
 {
   "name": "lanecdb",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A distributed high performance document database, using blockchain to ensure full tracability and immutability of information",
   "main": "app.js",
   "scripts": {
@@ -21,6 +21,7 @@
   "dependencies": {
     "crypto-js": "^3.1.9-1",
     "express": "^4.16.2",
-    "node-schedule": "^1.2.5"
+    "node-schedule": "^1.2.5",
+    "winston": "^2.4.0"
   }
 }
