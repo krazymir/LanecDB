@@ -1,7 +1,11 @@
 'use strict'
 
 const settings = require('../settings.json')
-//const blockchain = require('./blockchain')
+
+const EventEmitter = require('events');
+// Adding an event emitter
+class MainEmitter extends EventEmitter {}
+const emit = new MainEmitter();
 
 // Initializing logging to use throughout the application
 const winston = require('winston')
@@ -10,9 +14,10 @@ winston.loggers.add(settings.logging.loggerName, settings.logging.loggerConfig)
 
 const logger = winston.loggers.get(settings.logging.loggerName)
 
-let obj = {
+module.exports = {
     log: logger,
-    config: {}
+    emitter: emit,
+    settings: settings,
+    config: {
+    }
 }
-
-module.exports = obj

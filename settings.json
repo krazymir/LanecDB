@@ -1,32 +1,50 @@
 {
+    "irc": {
+        "servers": [
+            {
+                "address": "irc.freenode.net",
+                "port": 6667
+            },
+            {
+                "address": "chat.freenode.net",
+                "port": 6667
+            }
+        ]
+    },
+    "api": {
+        "port": 3000
+    },
+    "nodes": {
+        "clusterName": "DefaultCluster"
+    },
     "logging": {
         "loggerName": "develop",
         "loggerConfig": {
             "console": {
-              "level": "silly",
-              "colorize": "true",
-              "label": "category one"
+                "level": "silly",
+                "colorize": "true",
+                "label": "category one"
             },
             "file": {
                 "filename": "./system.log",
                 "level": "warn"
             }
-          }
+        }
     },
     "recurringJobs": [
         {
-            "module": "getExternalIP",
-            "cron": "* * * * *",
-            "startImmediately": true,
-            "args": [
-                "http://91.198.22.70/"
-            ]
-        },
-        {
-            "module": "discoverNodes",
-            "cron": "*/12 * * * *",
+            "module": "listenForNodes",
             "startImmediately": true,
             "args": []
+        },
+        {
+            "module": "getExternalIP",
+            "cron": "*/13 * * * *",
+            "startImmediately": true,
+            "args": [
+                "http://91.198.22.70/",
+                "http://freegeoip.net/json/"
+            ]
         },
         {
             "module": "initBlockchain",
