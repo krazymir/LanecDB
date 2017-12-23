@@ -2,10 +2,6 @@
     "irc": {
         "servers": [
             {
-                "address": "irc.freenode.net",
-                "port": 6667
-            },
-            {
                 "address": "chat.freenode.net",
                 "port": 6667
             }
@@ -32,11 +28,6 @@
         }
     },
     "recurringJobs": [
-        {
-            "module": "listenForNodes",
-            "startImmediately": true,
-            "args": []
-        },
         {
             "module": "getExternalIP",
             "cron": "*/13 * * * *",
