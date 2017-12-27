@@ -2,16 +2,16 @@
 
 const common = require('../common')
 const settings = common.settings
-const ircClient = require('../ircClient')
+const ircC = require('../ircClient')
 
 function getIrcNodes(serverAddress, port, nick, realName, channel, say) {
-    ircClient.talk(serverAddress, nick, realName, channel, say)
+    ircC.talk(serverAddress, nick, realName, channel, say)
 }
 
-common.emitter.on('ipDiscovered', () => {
-    let nick = ircClient.encodeNick(common.config.externalIP, settings.api.port)
+common.emitter.once('ipDiscovered', () => {
+    let nick = ircC.encodeNick(common.config.externalIP, settings.api.port)
     
     settings.irc.servers.forEach(server => {
-        ircClient.listen(server.address, nick, 'LanecDB Node', `#LanecDB@${settings.nodes.clusterName}`, 'nodeDiscovered')
+        ircC.bootstrapNodes(server.address, nick, 'LanecDB Node', `#LanecDB@${settings.nodes.clusterName}`, 'nodeDiscovered')
     });
 })

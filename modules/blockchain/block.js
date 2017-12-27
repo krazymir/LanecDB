@@ -11,6 +11,10 @@ class Block {
         this.hash = SHA256(index + previousHash + timestamp + data).toString()
     }
 
+    /**
+     * Returns the genesis block for the blockchain
+     * @returns The genesis block
+     */
     getGenesisBlock = () => {
         return new Block(0, "0", 1465154705, "Genesis block")
     }

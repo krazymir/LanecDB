@@ -8,7 +8,7 @@
         ]
     },
     "api": {
-        "port": 3000
+        "port": "auto"
     },
     "nodes": {
         "clusterName": "DefaultCluster"
