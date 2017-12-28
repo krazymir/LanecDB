@@ -3,5 +3,5 @@
 const common = require('../common')
 let settings = common.settings
 
-common.emitter.on('nodeDiscovered', (event) => {
+common.emitter.on('nodeDiscovered', (nodes) => {
 })

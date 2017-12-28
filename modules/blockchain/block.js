@@ -1,6 +1,6 @@
 'use strict'
 
-const SHA256 = require("crypto-js/sha256")
+const common = require("../common")
 
 class Block {
     constructor(index, previousHash, timestamp, data) {
@@ -8,7 +8,7 @@ class Block {
         this.previousHash = previousHash.toString()
         this.timestamp = timestamp
         this.data = data
-        this.hash = SHA256(index + previousHash + timestamp + data).toString()
+        this.hash = common.utils.sha256(index + previousHash + timestamp + data).toString()
     }
 
     /**
