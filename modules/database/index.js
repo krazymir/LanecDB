@@ -20,14 +20,12 @@ class Database {
         this.clusterName = clusterName
         this.filesPath = `${__dirname}/data/${this.clusterName}`
         // Create the path if it doesn't exist
-        try {
+        if (!fs.existsSync(`${__dirname}/data`)) {
             fs.mkdirSync(`${__dirname}/data`)
         }
-        catch (err) { }
-        try {
+        if (!fs.existsSync(`${__dirname}/data/${this.clusterName}`)) {
             fs.mkdirSync(`${__dirname}/data/${this.clusterName}`)
         }
-        catch (err) { }
     }
 
     /**
