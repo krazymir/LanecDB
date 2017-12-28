@@ -12,8 +12,7 @@ class IrcClient {
      * @param nicks The raw string of nicknames, returned upon joining a channel
      * @returns An array of nicknames in the channel 
      */
-
-    static parseNicks(nicks) {
+    parseNicks(nicks) {
         let nodes = []
         try {
             nicks.split(' ').forEach(element => {
@@ -43,11 +42,12 @@ class IrcClient {
      */
     bootstrapNodes(address, nick, realName, channel, eventName) {
         try {
+            let handleNicks = this.parseNicks
             let client = irc.connect(address, { nick: nick, realname: realName }).use(irc.pong, channels).on('welcome', function (msg) {
                 // Received after joining the channel, when we receive who is in
                 client.on('RPL_NAMREPLY', function (data) {
                     if (data && data.params && data.params.length > 3) {
-                        let nodes = IrcClient.parseNicks(data.params[3])
+                        let nodes = handleNicks(data.params[3])
                         common.emitter.emit(eventName, nodes)
                     }
                 })
