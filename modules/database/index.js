@@ -1,7 +1,16 @@
 'use strict';
-
+/**
+ * Initializing everything separately from the common.js,
+ * so we won't get corcular references,
+ * since common.js is depending on the db as well
+*/
 const fs = require('fs')
 const sha256 = require("crypto-js/sha256")
+const settings = require('../../settings.json')
+
+const winston = require('winston')
+winston.loggers.add(settings.logging.loggerName, settings.logging.loggerConfig)
+const logger = winston.loggers.get(settings.logging.loggerName)
 
 class Database {
     constructor(clusterName) {
@@ -25,67 +34,63 @@ class Database {
      * Sets a value in the DB
      * @param key the key for the value 
      * @param value The value itself
-     * @param cb A callback to be invoked, when the save is done
+     * @returns A promise object, so you can chain logic what happens on resolving or rejecting the promise
      */
-    set(key, value, cb) {
-        fs.writeFile(`${this.filesPath}/${sha256(key)}.json`, JSON.stringify(value), cb)
-    }
-
-    /**
-     * Sets a value in the DB synchronously
-     * @param key the key for the value 
-     * @param value The value itself
-     */
-    setSync(key, value) {
-        fs.writeFileSync(`${this.filesPath}/${sha256(key)}.json`, JSON.stringify(value))
+    set(key, value) {
+        return new Promise((resolve, reject) => {
+            fs.writeFile(`${this.filesPath}/${sha256(key)}.json`, JSON.stringify(value), (err, data) => {
+                if (err) {
+                    logger.error(err)
+                    reject(err)
+                }
+                else {
+                    resolve()
+                }
+            })
+        })
     }
 
     /**
      * Gets a value by a key from the DB
-     * @param key the key for the value 
-     * @param cb A callback to be invoked, when the retrieval is done
+     * @param key the key for the value
+     * @returns A promise object, so you can chain logic what happens on resolving or rejecting the promise
      */
-    get(key, cb) {
-        fs.readFile(`${this.filesPath}/${sha256(key).toString()}.json`, cb)
-    }
-
-    /**
-     * Gets a value from the DB synchronously
-     * @param key The key we are looking to retrieve data for
-     * @returns The value retrieved, or null if it is not found
-     */
-    getSync(key) {
-        if (!fs.existsSync(`${this.filesPath}/${sha256(key).toString()}.json`)) {
-            return null
-        }
-        return JSON.parse(fs.readFileSync(`${this.filesPath}/${sha256(key).toString()}.json`))
+    get(key) {
+        return new Promise((resolve, reject) => {
+            fs.readFile(`${this.filesPath}/${sha256(key).toString()}.json`, (err, data) => {
+                if (err) {
+                    logger.error(err)
+                    reject(err)
+                }
+                else {
+                    resolve(JSON.parse(data))
+                }
+            })
+        })
     }
 
     /**
      * Deletes a value by a key from the DB
-     * @param key The key we want to delete 
-     * @param cb A callback to be invoked, when the deletion is done
-     */
-    delete(key, cb) {
-        fs.unlink(`${this.filesPath}/${sha256(key).toString()}.json`, cb)
-    }
-
-    /**
-     * Deletes a value from the DB synchronously
      * @param key The key we want to delete
-     * @returns True if successful, false, otherwise
+     * @returns A promise object, so you can chain logic what happens on resolving or rejecting the promise
      */
-    deleteSync(key) {
-        if (!fs.existsSync(`${this.filesPath}/${sha256(key).toString()}.json`)) {
-            return false
-        }
-        try {
-            fs.unlinkSync(`${this.filesPath}/${sha256(key).toString()}.json`)
-        }
-        catch (err) {
-            return false
-        }
-        return true
+    delete(key) {
+        return new Promise((resolve, reject) => {
+            fs.unlink(`${this.filesPath}/${sha256(key).toString()}.json`, (err, data) => {
+                if (err) {
+                    if (!err.code || err.code !== 'ENOENT') {
+                        logger.error(err)
+                        reject(err)
+                    } else {
+                        // The value was not found, and we're fine with that
+                        resolve()
+                    }
+                }
+                else {
+                    resolve()
+                }
+            })
+        })
     }
 }
 

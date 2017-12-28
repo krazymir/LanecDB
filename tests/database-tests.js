@@ -12,55 +12,49 @@ let updatedValue = {
     prop: 7,
     propString: 'New string'
 }
-describe('database - sync', function () {
-    it('deleteSync(key) should work', function () {
-        db.deleteSync(expectedKey)
+describe('Database Tests - CRUD operations', function () {
+    it('delete(key) should work', function () {
+        db.delete(expectedKey).then(
+            () => { assert.ok() }
+        ).catch((err) => {
+            assert.fail(err)
+        })
     })
-    it('setSync(key, value) should save values', function () {
-        db.setSync(expectedKey, expectedValue)
+    it('set(key, value) should save values', function () {
+        db.set(expectedKey, expectedValue).then(
+            (data) => { assert.ok() }
+        ).catch(
+            (err) => assert.fail(err)
+            )
     })
-    it('getSync(key) should be able to get the values we set', function () {
-        let actual = db.getSync(expectedKey)
-        assert.equal(expectedValue.prop, actual.prop)
-        assert.equal(expectedValue.propString, actual.propString)
-    })
-    it('setSync(key, value) should be able to update the value', function () {
-        db.setSync(expectedKey, updatedValue)
-    })
-    it('getSync(key) should be able to get the value we set', function () {
-        let actual = db.getSync(expectedKey)
-        assert.equal(updatedValue.prop, actual.prop)
-        assert.equal(updatedValue.propString, actual.propString)
-    })
-    it('deleteSync(key) should delete the created values', function () {
-        assert.equal(db.deleteSync(expectedKey), true)
-    })
-})
-describe('database - async', function () {
-    it('delete(key, cb) should work', function () {
-        db.delete(expectedKey, () => { })
-    })
-    it('set(key, value, cb) should save values', function () {
-        db.set(expectedKey, expectedValue, (data) => { })
-    })
-    it('get(key, cb) should be able to get the values we set', function () {
-        db.get(expectedKey, (err, data) => {
+    it('get(key) should be able to get the values we set', function () {
+        db.get(expectedKey).then((data) => {
             assert.equal(expectedValue.prop, data.prop)
             assert.equal(expectedValue.propString, data.propString)
-        })
+        }).catch(
+            (err) => assert.fail(err)
+            )
     })
-    it('set(key, value, cb) should be able to update the value', function () {
-        db.set(expectedKey, updatedValue, () => { })
+    it('set(key, value) should be able to update the value', function () {
+        db.set(expectedKey, updatedValue).then(
+            () => { }
+        ).catch(
+            (err) => assert.fail(err)
+            )
     })
-    it('get(key, cb) should be able to get the value we set', function () {
-        db.getSync(expectedKey, (err, data) => {
+    it('get(key) should be able to get the value we set', function () {
+        db.get(expectedKey).then((data) => {
             assert.equal(updatedValue.prop, data.prop)
             assert.equal(updatedValue.propString, data.propString)
-        })
+        }).catch(
+            (err) => assert.fail(err)
+            )
     })
-    it('delete(key, cb) should delete the created values', function () {
-        db.delete(expectedKey, () => {
-            assert.equal(db.getSync(expectedKey), null)
-        })
+    it('delete(key) should delete the created values', function () {
+        db.delete(expectedKey).then(() => {
+            db.getS(expectedKey).then((data) => assert.equal(data, null))
+        }).catch(
+            (err) => assert.fail(err)
+            )
     })
 })
