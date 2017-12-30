@@ -25,8 +25,8 @@ function initIP(a) {
                         let ipStr = result[0]
                         if (ipStr) {
                             common.config.externalIP = ipStr
-                            common.emitter.emit('ipDiscovered', common.config.externalIP)
-                            common.log.info(`Acquirired IP: ${common.config.externalIP}`)
+                            //common.emitter.emit('ipDiscovered', common.config.externalIP)
+                            common.log.info(`Acquirired external IP: ${common.config.externalIP}`)
                         }
                     }
                 })

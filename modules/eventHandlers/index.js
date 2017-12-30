@@ -1,4 +1,5 @@
-const fs = require('fs');
+const fs = require('fs')
+const common = require('../common')
 
 // Processing all modules in the folder
 try {
@@ -7,7 +8,8 @@ try {
             if (!__filename.endsWith(file) && file.toLowerCase().endsWith('.js')) {
                 require(`./${file}`)
             }
-        });
+        })
+        common.emitter.emit('eventsLoadCompleted', common.config.internalIP)
     })
 }
 catch (err) {

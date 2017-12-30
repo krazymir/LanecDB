@@ -34,8 +34,14 @@
             "startImmediately": true,
             "args": [
                 "http://91.198.22.70/",
-                "http://freegeoip.net/json/"
+                "http://freegeoip.net/json/",
+                "http://ifconfig.io/ip"
             ]
+        },
+        {
+            "module": "getInternalIP",
+            "cron": "*/13 * * * *",
+            "startImmediately": true
         },
         {
             "module": "initBlockchain",
