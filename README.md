@@ -1,5 +1,5 @@
 # LanecDB
-**LanecDB** is an attempt at creating a distributed database, based on blockchain, allowing for shared knowledge, that cannot be easily altered.
+**LanecDB** (_pronounced similar to Lunets daeh bah_ - joke name in Bulgarian :)) is an attempt at creating a distributed database, based on blockchain, allowing for shared knowledge, that cannot be easily altered.
 The data can be written by anyone and changed either by all or by the owner, depending on the configuration.
 Gossip techniques are used for propagation of information.
 The database will be available as an npm package, allowing for cross-platform usage.
