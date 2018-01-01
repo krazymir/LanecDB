@@ -10,5 +10,6 @@ The design is heavily influenced by
 - And here - [Bitcoin wiki](https://en.bitcoin.it/), primarily on how nodes discover one another
 
 The database is an attempt to resolve issues, such as honest, secure, tamper-proof online voting, preserving the vote secrecy, B2B communication and data exchanges and others.
-Remember - it's still work in progress. And as Kafka said:
+Remember - it's still work in progress.
+And as Kafka said:
 > Believing in progress does not mean believing that any progress has yet been made.
