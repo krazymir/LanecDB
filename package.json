@@ -24,6 +24,7 @@
     "express": "^4.16.2",
     "irc-channels": "^3.6.2",
     "irc-connect": "^2.2.0",
+    "node-jsencrypt": "^1.0.0",
     "node-schedule": "^1.2.5",
     "winston": "^2.4.0"
   }

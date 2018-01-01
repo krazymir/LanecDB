@@ -2,6 +2,8 @@
 
 const sha256 = require("crypto-js/sha256")
 const sha1 = require("crypto-js/sha1")
+const JSEncrypt = require('node-jsencrypt')
+const jsEncrypt = new JSEncrypt()
 
 class Utils {
     /**
@@ -100,6 +102,25 @@ class Utils {
      */
     getRandomRange(min, max) {
         return Math.floor(Math.random() * (max - min) + min);
+    }
+
+    /**
+     * Encrypts data, using the auto-generated public key
+     * @param data The data to be encrypted
+     * @returns The encrypted data
+     */
+    encrypt(data) {
+        return jsEncrypt.encrypt(data)
+    }
+
+    /**
+     * Decrypts data, using the auto-generated or set private key
+     * @param data The data to be decrypted
+     * @param privateKey Optional - the private key to use, decrypting the data
+     * @returns The decrypted data
+     */
+    decrypt(data, privateKey) {
+        return jsEncrypt.decrypt(data, privateKey)
     }
 }
 

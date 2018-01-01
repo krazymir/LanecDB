@@ -1,7 +1,7 @@
 'use strict';
 
-let assert = require('assert')
-let db = require('./../modules/database')('test-cluster')
+const assert = require('assert')
+const db = require('./../modules/database')('test-cluster')
 
 let expectedKey = 'key'
 let expectedValue = {

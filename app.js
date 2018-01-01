@@ -14,7 +14,7 @@ app.use(bodyParser.json())
 app.use(function (req, res, next) {
     res.header("X-powered-by", "Blood-sweat-tears")
     next()
-  })
+})
 
 app.post('/db/:key', (req, res) => {
     common.emitter.emit('dbSet', req.params.key, req.body, res)
