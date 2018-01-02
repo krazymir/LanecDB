@@ -4,6 +4,8 @@ const sha256 = require("crypto-js/sha256")
 const sha1 = require("crypto-js/sha1")
 const JSEncrypt = require('node-jsencrypt')
 const jsEncrypt = new JSEncrypt()
+const publicKey = jsEncrypt.getPublicKey()
+const privateKey = jsEncrypt.getPrivateKey()
 
 class Utils {
     /**
@@ -107,20 +109,52 @@ class Utils {
     /**
      * Encrypts data, using the auto-generated public key
      * @param data The data to be encrypted
+     * @param key Optional - the key to use, encrypting the data - we use the public key for encryption and private key for signing
      * @returns The encrypted data
      */
-    encrypt(data) {
-        return jsEncrypt.encrypt(data)
+    encrypt(data, key) {
+        return jsEncrypt.encrypt(data, key)
     }
 
     /**
      * Decrypts data, using the auto-generated or set private key
      * @param data The data to be decrypted
-     * @param privateKey Optional - the private key to use, decrypting the data
+     * @param key Optional - the key to use, decrypting the data - the private key when decrypting and the public key, when verifying a signature
      * @returns The decrypted data
      */
-    decrypt(data, privateKey) {
-        return jsEncrypt.decrypt(data, privateKey)
+    decrypt(data, key) {
+        return jsEncrypt.decrypt(data, key)
+    }
+
+    /**
+     * Generates a digital signature of the data
+     * @param data The data to be signed
+     * @param key Optional - the private key to be used - if omitted, the default private key for the node will be used
+     * @returns The signature of the data - when decrypted with the public key will return the sha256 hash of the data, proving that the holder of the private key sends this data
+     */
+    signData(data, key) {
+        key = key || privateKey
+        let dataHash = sha256(JSON.stringify(data)).toString()
+        return jsEncrypt.encrypt(dataHash, key)
+    }
+
+    /**
+     * Checks the validity of the signed data - if the public key of the sender decrypts the signature and it matches the sha256 hash of the data, then it is not changed and we can verify the sender's identity
+     * @param data The data, which signature we must verify
+     * @param signature The cryptographic signature of the data we want to verify
+     * @param key Optional - the public key to be used - if omitted, the default public key for the node will be used
+     * @returns true if the signature is verified and false otherwise
+     */
+    verifySignature(data, signature, key) {
+        try {
+            key = key || publicKey
+            let dataHash = sha256(JSON.stringify(data)).toString()
+            let sigHash = jsEncrypt.decrypt(signature, key)
+            return (dataHash === sigHash)
+        }
+        catch (err) {
+            return false
+        }
     }
 }
 
