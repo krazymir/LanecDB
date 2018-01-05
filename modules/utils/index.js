@@ -8,47 +8,26 @@ let publicKey = jsEncrypt.getPublicKey()
 let privateKey = jsEncrypt.getPrivateKey()
 const fs = require('fs')
 
-let initAsymKeys = (path, key) => {
-    return new Promise((resolve, reject) => {
-        fs.exists(path, (exists) => {
-            if (!exists) {
-                fs.writeFile(path, key, (err, data) => {
-                    if (err) {
-                        reject(err)
-                    }
-                    else {
-                        resolve(key)
-                    }
-                })
-            }
-            else {
-                fs.readFile(path, (err, data) => {
-                    if (err) {
-                        reject(err)
-                    }
-                    else {
-                        resolve(data)
-                    }
-                })
-            }
-        })
-    })
+const initAsymKeysSync = (path, key) => {
+    if (!fs.existsSync(path)) {
+        fs.writeFileSync(path, key)
+        return key
+    }
+    else {
+        return fs.readFileSync(path, 'utf8')
+    }
 }
 
 /* 
- * Asymmetric key initialization
+ * Sync asymmetric key initialization
  * We want only one set of keys to be used for the node
- *
 */
-initAsymKeys(`${__dirname}/../../pub.key`, jsEncrypt.getPublicKey()).then((data) => {
-    publicKey = data.toString()
-    jsEncrypt.setPublicKey(publicKey)
-})
+publicKey = initAsymKeysSync(`${__dirname}/../../pub.key`, publicKey)
+jsEncrypt.setPublicKey(publicKey)
 
-initAsymKeys(`${__dirname}/../../priv.key`, jsEncrypt.getPrivateKey()).then((data) => {
-    privateKey = data.toString()
-    jsEncrypt.setPrivateKey(privateKey)
-})
+privateKey = initAsymKeysSync(`${__dirname}/../../priv.key`, privateKey)
+jsEncrypt.setPrivateKey(privateKey)
+
 
 class Utils {
     /**
