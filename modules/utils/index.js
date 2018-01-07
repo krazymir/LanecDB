@@ -1,15 +1,20 @@
-'use strict';
+'use strict'
 
 const sha256 = require("crypto-js/sha256")
 const sha1 = require("crypto-js/sha1")
 const JSEncrypt = require('node-jsencrypt')
-const jsEncrypt = new JSEncrypt()
-let publicKey = jsEncrypt.getPublicKey()
-let privateKey = jsEncrypt.getPrivateKey()
+const settings = require('../../settings.json')
+// DQ checks for the keysize value
+let keysize = ((!settings.crypto || !settings.crypto.defaultKeySize || isNaN(settings.crypto.defaultKeySize)) ? 2048 : settings.crypto.defaultKeySize)
+const jsEncrypt = new JSEncrypt({ default_key_size: keysize })
 const fs = require('fs')
 
-const initAsymKeysSync = (path, key) => {
+let publicKey
+let privateKey
+
+const initAsymKeysSync = (path, getKey) => {
     if (!fs.existsSync(path)) {
+        let key = getKey()
         fs.writeFileSync(path, key)
         return key
     }
@@ -19,15 +24,27 @@ const initAsymKeysSync = (path, key) => {
 }
 
 /* 
- * Sync asymmetric key initialization
- * We want only one set of keys to be used for the node
+* Sync asymmetric key initialization
+* We want only one set of keys to be used for the node
+* If one of the files is missing we are regenerating both files
 */
-publicKey = initAsymKeysSync(`${__dirname}/../../pub.key`, publicKey)
-jsEncrypt.setPublicKey(publicKey)
+const removeKeyFiles = () => {
+    if (fs.existsSync(`${__dirname}/../../priv.key`)) {
+        fs.unlinkSync(`${__dirname}/../../priv.key`)
+    }
+    if (fs.existsSync(`${__dirname}/../../pub.key`)) {
+        fs.unlinkSync(`${__dirname}/../../pub.key`)
+    }
+}
+if ((fs.existsSync(`${__dirname}/../../priv.key`) && !fs.existsSync(`${__dirname}/../../pub.key`)) || (!fs.existsSync(`${__dirname}/../../priv.key`) && fs.existsSync(`${__dirname}/../../pub.key`))) {
+    removeKeyFiles()
+}
+const initKeys = () => {
+    privateKey = initAsymKeysSync(`${__dirname}/../../priv.key`, () => { return jsEncrypt.getPrivateKey() })
+    publicKey = initAsymKeysSync(`${__dirname}/../../pub.key`, () => { return jsEncrypt.getPublicKey() })
+}
 
-privateKey = initAsymKeysSync(`${__dirname}/../../priv.key`, privateKey)
-jsEncrypt.setPrivateKey(privateKey)
-
+initKeys()
 
 class Utils {
     /**
@@ -134,7 +151,7 @@ class Utils {
      * @param key Optional - the key to use, encrypting the data - we use the public key for encryption and private key for signing
      * @returns The encrypted data
      */
-    encrypt(data, key) {
+    encrypt(data, key = publicKey) {
         return jsEncrypt.encrypt(data, key)
     }
 
@@ -144,7 +161,7 @@ class Utils {
      * @param key Optional - the key to use, decrypting the data - the private key when decrypting and the public key, when verifying a signature
      * @returns The decrypted data
      */
-    decrypt(data, key) {
+    decrypt(data, key = privateKey) {
         return jsEncrypt.decrypt(data, key)
     }
 
