@@ -15,10 +15,10 @@ describe('Initialization - encrypt/descrypt', function () {
         let decryptedData = utils.security.decrypt(encryptedData)
         assert.equal(decryptedData, data, 'The decripted string must mach the string before encryption')
     })
-    it('sign(data, key) should sign the data and return a signature', function () {
-        signature = utils.security.sign(data)
-    })
-    it('verifySignature(data, signature, key) should verify the data signature', function () {
-        assert.equal(utils.security.verifySignature(data, signature, utils.security.getPublicKey()), true, 'The signature should be ok')
-    })
+    // it('sign(data, key) should sign the data and return a signature', function () {
+    //     signature = utils.security.sign(data)
+    // })
+    // it('verifySignature(data, signature, key) should verify the data signature', function () {
+    //     assert.equal(utils.security.verifySignature(data, signature, utils.security.getPublicKey()), true, 'The signature should be ok')
+    // })
 })
