@@ -9,7 +9,7 @@
         ]
     },
     "crypto":{
-        "defaultKeySize": 8192
+        "defaultKeySize": 2048
     },
     "api": {
         "port": 3000
