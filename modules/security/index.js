@@ -76,6 +76,13 @@ class Security {
         }
     }
     /**
+     * Gets the public key for the node
+     * @returns The public key, used by the node
+     */
+    getPublicKey() {
+        return publicKey
+    }
+    /**
      * Encrypts data, using the auto-generated public key
      * @param data The data to be encrypted
      * @param key Optional - the key to use, encrypting the data - we use the public key for encryption and private key for signing
