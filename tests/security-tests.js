@@ -1,9 +1,9 @@
 'use strict';
 
 const assert = require('assert')
-const utils = require('../modules/utils')
+const utils = require('../modules/security')
 
-let data = 'Some string to be encrypted'
+const data = 'Some string to be encrypted'
 let encryptedData
 
 describe('Initialization - encrypt/descrypt', function () {
