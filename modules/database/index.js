@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 /**
  * Initializing everything separately from the common.js,
  * so we won't get corcular references,
@@ -27,7 +27,6 @@ class Database {
             fs.mkdirSync(`${__dirname}/data/${this.clusterName}`)
         }
     }
-
     /**
      * Sets a value in the DB
      * @param key the key for the value 
@@ -47,7 +46,6 @@ class Database {
             })
         })
     }
-
     /**
      * Gets a value by a key from the DB
      * @param key the key for the value
