@@ -2,6 +2,7 @@
 
 const common = require('../common')
 const settings = common.settings
+const sec = common.utils.security
 
 // Initializing the web server
 const express = require('express')
@@ -16,17 +17,18 @@ app.use(function (req, res, next) {
 })
 
 app.post('/db/:key', (req, res) => {
-    if(!req.get('pub') || !req.get('sig')){
-        res.status(401).send('Unauthorized').end()
+    if (sec.authorizeRequest(req, res)) {
+        common.emitter.emit('dbSet', req.params.key, req.body, res)
     }
-    common.emitter.emit('dbSet', req.params.key, req.body, res)
 }
 ).put('/db/:key', (req, res) => {
-    common.emitter.emit('dbSet', req.params.key, req.body, res)
-}
-    ).get('/db/:key', (req, res) => {
-        common.emitter.emit('dbGet', req.params.key, res)
+    if (sec.authorizeRequest(req, res)) {
+        common.emitter.emit('dbSet', req.params.key, req.body, res)
     }
+}
+).get('/db/:key', (req, res) => {
+    common.emitter.emit('dbGet', req.params.key, res)
+}
     ).delete('/db/:key', (req, res) => {
         common.emitter.emit('dbDelete', req.params.key, res)
     }
