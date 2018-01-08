@@ -134,14 +134,24 @@ class Security {
     }
     /**
      * Checks the validity of the signed data - if the public key of the sender decrypts the signature and it matches the sha256 hash of the data, then it is not changed and we can verify the sender's identity
-     * @param data The data, which signature we must verify
+     * @param jsonData The data, which signature we must verify
      * @param signature The cryptographic signature of the data we want to verify
      * @param key Optional - the public key to be used - if omitted, the default public key for the node will be used
      * @returns true if the signature is verified and false otherwise
      */
-    verifySignature(data, signature, key = publicKey) {
+    verifySignature(jsonData, signature, key = publicKey) {
+        return verifySignatureOnString(JSON.stringify(data), signature, key)
+    }
+    /**
+     * Checks the validity of the signed data - if the public key of the sender decrypts the signature and it matches the sha256 hash of the data, then it is not changed and we can verify the sender's identity
+     * @param stringData The string data, which signature we must verify
+     * @param signature The cryptographic signature of the data we want to verify
+     * @param key Optional - the public key to be used - if omitted, the default public key for the node will be used
+     * @returns true if the signature is verified and false otherwise
+     */
+    verifySignatureString(stringData, signature, key = publicKey) {
         try {
-            let dataHash = sha256(JSON.stringify(data)).toString()
+            let dataHash = sha256(stringData).toString()
             let sigHash = jsEncrypt.decrypt(signature, key)
             return (dataHash === sigHash)
         }
@@ -149,6 +159,34 @@ class Security {
             common.log.error(err.message)
             return false
         }
+    }
+    /**
+     * Verifies that a request is originating from the appropriate source, before allowing it to change data
+     * @param req The web request
+     * @param res The web response
+     * @returns true if the request is verified and false otherwise
+     */
+    authorizeRequest(req, res) {
+        if (!req.get('pub') || !req.get('sig') || !req.body) {
+            res.status(400).send('Bad Request').end()
+            // Returning insread of throwing an error, because it's more efficient, in case of an ongoing DOS attack
+            return false
+        }
+        try {
+            let publicKey = req.get('pub')
+            let signature = req.get('sig')
+            let data = req.body.toString()
+            if (!verifySignatureString(data, signature, publicKey)) {
+                res.status(401).send('Unauthorized').end()
+                return false
+            }
+        }
+        catch (err) {
+            res.status(401).send('Unauthorized').end()
+            return false
+        }
+        res.status(200).end()
+        return true
     }
 }
 
