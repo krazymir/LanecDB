@@ -134,16 +134,6 @@ class Security {
     }
     /**
      * Checks the validity of the signed data - if the public key of the sender decrypts the signature and it matches the sha256 hash of the data, then it is not changed and we can verify the sender's identity
-     * @param jsonData The data, which signature we must verify
-     * @param signature The cryptographic signature of the data we want to verify
-     * @param key Optional - the public key to be used - if omitted, the default public key for the node will be used
-     * @returns true if the signature is verified and false otherwise
-     */
-    verifySignature(jsonData, signature, key = publicKey) {
-        return verifySignatureOnString(JSON.stringify(data), signature, key)
-    }
-    /**
-     * Checks the validity of the signed data - if the public key of the sender decrypts the signature and it matches the sha256 hash of the data, then it is not changed and we can verify the sender's identity
      * @param stringData The string data, which signature we must verify
      * @param signature The cryptographic signature of the data we want to verify
      * @param key Optional - the public key to be used - if omitted, the default public key for the node will be used
@@ -159,6 +149,16 @@ class Security {
             common.log.error(err.message)
             return false
         }
+    }
+    /**
+     * Checks the validity of the signed data - if the public key of the sender decrypts the signature and it matches the sha256 hash of the data, then it is not changed and we can verify the sender's identity
+     * @param jsonData The data, which signature we must verify
+     * @param signature The cryptographic signature of the data we want to verify
+     * @param key Optional - the public key to be used - if omitted, the default public key for the node will be used
+     * @returns true if the signature is verified and false otherwise
+     */
+    verifySignature(jsonData, signature, key = publicKey) {
+        return this.verifySignatureString(JSON.stringify(jsonData), signature, key)
     }
     /**
      * Verifies that a request is originating from the appropriate source, before allowing it to change data
