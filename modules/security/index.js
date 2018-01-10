@@ -118,19 +118,28 @@ class Security {
     }
     /**
      * Generates a digital signature of the data
-     * @param data The data to be signed
+     * @param stringData The data to be signed
      * @param key Optional - the private key to be used - if omitted, the default private key for the node will be used
      * @returns The signature of the data - when decrypted with the public key will return the sha256 hash of the data, proving that the holder of the private key sends this data
      */
-    sign(data, key = privateKey) {
+    signString(stringData, key = privateKey) {
         try {
-            let dataHash = sha256(JSON.stringify(data)).toString()
+            let dataHash = sha256(stringData).toString()
             return jsEncrypt.encrypt(dataHash, key)
         }
         catch (err) {
             common.log.error(err.message)
             return null
         }
+    }
+    /**
+     * Generates a digital signature of the data
+     * @param data The data to be signed
+     * @param key Optional - the private key to be used - if omitted, the default private key for the node will be used
+     * @returns The signature of the data - when decrypted with the public key will return the sha256 hash of the data, proving that the holder of the private key sends this data
+     */
+    sign(data, key = privateKey) {
+        return signString(JSON.stringify(data))
     }
     /**
      * Checks the validity of the signed data - if the public key of the sender decrypts the signature and it matches the sha256 hash of the data, then it is not changed and we can verify the sender's identity
@@ -152,13 +161,13 @@ class Security {
     }
     /**
      * Checks the validity of the signed data - if the public key of the sender decrypts the signature and it matches the sha256 hash of the data, then it is not changed and we can verify the sender's identity
-     * @param jsonData The data, which signature we must verify
+     * @param data The data, which signature we must verify
      * @param signature The cryptographic signature of the data we want to verify
      * @param key Optional - the public key to be used - if omitted, the default public key for the node will be used
      * @returns true if the signature is verified and false otherwise
      */
-    verifySignature(jsonData, signature, key = publicKey) {
-        return this.verifySignatureString(JSON.stringify(jsonData), signature, key)
+    verifySignature(data, signature, key = publicKey) {
+        return this.verifySignatureString(JSON.stringify(data), signature, key)
     }
     /**
      * Verifies that a request is originating from the appropriate source, before allowing it to change data
@@ -176,7 +185,7 @@ class Security {
             let publicKey = req.get('pub')
             let signature = req.get('sig')
             let data = req.body.toString()
-            if (!verifySignatureString(data, signature, publicKey)) {
+            if (!this.verifySignatureString(data, signature, publicKey)) {
                 res.status(401).send('Unauthorized').end()
                 return false
             }
