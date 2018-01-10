@@ -2,8 +2,8 @@
 
 const common = require('../common')
 
-common.emitter.on('dbGet', (key, res) => {
-    common.db.get(key).then((data) => {
+common.emitter.on('dbGet', (key, group, res) => {
+    common.db.get(key, group).then((data) => {
         res.status(200).json(data);
     })
 })
