@@ -18,19 +18,22 @@ app.use(function (req, res, next) {
 
 app.post('/db/:key', (req, res) => {
     if (sec.authorizeRequest(req, res)) {
-        common.emitter.emit('dbSet', req.params.key, req.body, res)
+        common.emitter.emit('dbSet', req.params.key, req.body, req.get('pub'), res)
     }
 }
 ).put('/db/:key', (req, res) => {
     if (sec.authorizeRequest(req, res)) {
-        common.emitter.emit('dbSet', req.params.key, req.body, res)
+        common.emitter.emit('dbSet', req.params.key, req.body, req.get('pub'), res)
     }
 }
-).get('/db/:key', (req, res) => {
-    common.emitter.emit('dbGet', req.params.key, res)
-}
+    ).get('/db/:key', (req, res) => {
+        let group = req.get('pub') ? req.get('pub') : null
+        common.emitter.emit('dbGet', req.params.key, group, res)
+    }
     ).delete('/db/:key', (req, res) => {
-        common.emitter.emit('dbDelete', req.params.key, res)
+        if (sec.authorizeRequest(req, res)) {
+            common.emitter.emit('dbDelete', req.params.key, req.get('pub'), res)
+        }
     }
     ).listen(settings.api.port, () => {
         console.log(`Starting the web server on port ${settings.api.port}`)
