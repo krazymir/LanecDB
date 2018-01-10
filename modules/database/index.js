@@ -31,11 +31,16 @@ class Database {
      * Sets a value in the DB
      * @param key the key for the value 
      * @param value The value itself
+     * @param group Optional - the group to which the key belongs to
      * @returns A promise object, so you can chain logic what happens on resolving or rejecting the promise
      */
-    set(key, value) {
+    set(key, value, group = null) {
         return new Promise((resolve, reject) => {
-            fs.writeFile(`${this.filesPath}/${sha256(key)}.json`, JSON.stringify(value), (err, data) => {
+            // If we have a group set, and there is no folder for it - we create it, before saving the data into the group
+            if (group && !fs.existsSync(`${this.filesPath}/${sha256(group).toString()}`)) {
+                fs.mkdirSync(`${this.filesPath}/${sha256(group).toString()}`)
+            }
+            fs.writeFile(`${this.filesPath}/${group ? sha256(group).toString() + '/' : ''}${sha256(key)}.json`, JSON.stringify(value), (err, data) => {
                 if (err) {
                     logger.error(err)
                     reject(err)
@@ -49,11 +54,12 @@ class Database {
     /**
      * Gets a value by a key from the DB
      * @param key the key for the value
+     * @param group Optional - the group to which the key belongs to
      * @returns A promise object, so you can chain logic what happens on resolving or rejecting the promise
      */
-    get(key) {
+    get(key, group = null) {
         return new Promise((resolve, reject) => {
-            fs.readFile(`${this.filesPath}/${sha256(key).toString()}.json`, (err, data) => {
+            fs.readFile(`${this.filesPath}/${group ? sha256(group).toString() + '/' : ''}${sha256(key).toString()}.json`, (err, data) => {
                 if (err) {
                     logger.error(err)
                     reject(err)
@@ -68,11 +74,12 @@ class Database {
     /**
      * Deletes a value by a key from the DB
      * @param key The key we want to delete
+     * @param group Optional - the group to which the key belongs to
      * @returns A promise object, so you can chain logic what happens on resolving or rejecting the promise
      */
-    delete(key) {
+    delete(key, group = null) {
         return new Promise((resolve, reject) => {
-            fs.unlink(`${this.filesPath}/${sha256(key).toString()}.json`, (err, data) => {
+            fs.unlink(`${this.filesPath}/${group ? sha256(group).toString() + '/' : ''}${sha256(key).toString()}.json`, (err, data) => {
                 if (err) {
                     if (!err.code || err.code !== 'ENOENT') {
                         logger.error(err)
