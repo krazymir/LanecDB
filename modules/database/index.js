@@ -13,18 +13,18 @@ winston.loggers.add(settings.logging.loggerName, settings.logging.loggerConfig)
 const logger = winston.loggers.get(settings.logging.loggerName)
 
 class Database {
-    constructor(clusterName) {
-        if (!clusterName) {
-            throw new Error('You must provide a cluster name')
+    constructor(clusterName = null, systemDatabase = false) {
+        if (!clusterName && !systemDatabase) {
+            throw new Error('You must provide a cluster name or designate this database as system database')
         }
-        this.clusterName = clusterName
-        this.filesPath = `${__dirname}/data/${this.clusterName}`
+        this.dbRoot = clusterName && !systemDatabase ? clusterName : 'system'
+        this.filesPath = `${__dirname}/data/${this.dbRoot}`
         // Create the path if it doesn't exist
         if (!fs.existsSync(`${__dirname}/data`)) {
             fs.mkdirSync(`${__dirname}/data`)
         }
-        if (!fs.existsSync(`${__dirname}/data/${this.clusterName}`)) {
-            fs.mkdirSync(`${__dirname}/data/${this.clusterName}`)
+        if (!fs.existsSync(`${__dirname}/data/${this.dbRoot}`)) {
+            fs.mkdirSync(`${__dirname}/data/${this.dbRoot}`)
         }
     }
     /**
