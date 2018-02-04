@@ -3,7 +3,7 @@
 const settings = require('../../settings.json')
 const security = require('../security')
 class Utils {
-    constructor(){
+    constructor() {
         this.security = security
     }
     /**
@@ -71,6 +71,21 @@ class Utils {
      */
     getRandomRange(min, max) {
         return Math.floor(Math.random() * (max - min) + min);
+    }
+    /**
+     * Converts a date to UTC date
+     * @param date The date to be converted
+     * @returns The UTC equivalent of the date supplied
+     */
+    convertDateToUTC(date) {
+        return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds())
+    }
+    /**
+     * Gets the current UTC date
+     * @returns The UTC date representing the current moment
+     */
+    getUTCNow() {
+        return convertDateToUTC(new Date())
     }
 }
 

@@ -24,6 +24,7 @@ module.exports = {
     log: logger,
     emitter: emit,
     db: db,
+    knownNodes:[],
     utils: utils,
     settings: settings,
     config: {
