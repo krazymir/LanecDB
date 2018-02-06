@@ -31,7 +31,7 @@ class Blockchain {
      * @returns The genesis block
      */
     getGenesisBlock() {
-        return this.genesis
+        return block.createNewBlock(0, "0", 1465154705, "Genesis block", null)
     }
 
     /**
