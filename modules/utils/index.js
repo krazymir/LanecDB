@@ -85,7 +85,7 @@ class Utils {
      * @returns The UTC date representing the current moment
      */
     getUTCNow() {
-        return convertDateToUTC(new Date())
+        return this.convertDateToUTC(new Date())
     }
 }
 

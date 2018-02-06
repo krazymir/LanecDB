@@ -2,7 +2,7 @@
 
 const settings = require('../settings.json')
 const utils = require('./utils')
-const EventEmitter = require('events');
+const EventEmitter = require('events')
 const db = require('./database')(settings.nodes.clusterName)
 
 // Adding an event emitter
