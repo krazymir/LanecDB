@@ -15,7 +15,6 @@ class Blockchain {
     addNextBlockData(data) {
         let created = block.createNewBlock(this.tail.index + 1, this.tail.hash, common.utils.getUTCNow(), data, this.tail)
         this.tail = created
-        created.refreshBlockHash()
     }
 
     /**
@@ -31,7 +30,7 @@ class Blockchain {
      * @returns The genesis block
      */
     getGenesisBlock() {
-        return block.createNewBlock(0, "0", 1465154705, "Genesis block", null)
+        return block.createNewBlock(0, "0", 1465154705, "Genesis block", 0, null)
     }
 
     /**

@@ -8,6 +8,7 @@ class Block {
         this.previousHash = previousHash
         this.timestamp = timestamp
         this.data = data
+        this.nonce = 0
         this.previousBlock = previousBlock
         this.refreshBlockHash()
     }
@@ -25,14 +26,19 @@ class Block {
      * @returns The hash value of the block
      */
     calculateBlockHash(){
-        return common.utils.security.sha256(this.index.toString() + this.previousHash.toString() + this.timestamp.toString() + JSON.stringify(this.data)).toString()
+        return common.utils.security.sha256(this.index.toString() + this.previousHash.toString() + this.timestamp.toString() + JSON.stringify(this.data) + (this.nonce).toString()).toString()
     }
 
     /**
-     * Refreshes the block hash
+     * Refreshes the block hash and pays the proof of work
      */
     refreshBlockHash(){
-        this.hash = this.calculateBlockHash()
+        var validHash = /^[0]{2}/g
+        let hash = null
+        do {
+            hash = common.utils.security.sha256(this.index.toString() + this.previousHash.toString() + this.timestamp.toString() + JSON.stringify(this.data) + (++this.nonce).toString()).toString()
+        } while(!validHash.exec(hash))
+        this.hash = hash
     }
 }
 
